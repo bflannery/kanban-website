@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Serverless Kanban",
+  "name": "Serverless Kanban application servered from AWS S3",
   "icons": [
     {
       "src": "favicon.ico",
