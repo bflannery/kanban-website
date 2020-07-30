@@ -7,7 +7,6 @@ const useStyles = makeStyles(() => ({
   item: {
     padding: 10,
     margin: 10,
-    fontSize: '0.8em',
     cursor: 'pointer',
     backgroundColor: 'white'
   }
@@ -31,7 +30,9 @@ export default function KanbanItem({ item }) {
 
   return (
     <div ref={ref} style={{ opacity }}>
-      <div className={classes.item}>{item.title}</div>
+      <div className={classes.item}>
+        <h4>{item.title}</h4>
+      </div>
     </div>
   )
 }

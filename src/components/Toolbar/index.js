@@ -1,5 +1,5 @@
-import React from 'react'
-import { fade, makeStyles } from '@material-ui/core/styles'
+import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
@@ -7,7 +7,9 @@ import Typography from '@material-ui/core/Typography'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import Add from '@material-ui/icons/Add'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import AddNewTaskModal from './AddNewTaskModal'
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -20,43 +22,6 @@ const useStyles = makeStyles(theme => ({
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block'
-    }
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25)
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto'
-    }
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  inputRoot: {
-    color: 'inherit'
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch'
     }
   },
   sectionDesktop: {
@@ -75,8 +40,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function AppToolbar() {
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  const [addingNewTask, setNewTask] = useState(false)
 
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -101,6 +67,9 @@ export default function AppToolbar() {
   const handleMobileMenuOpen = event => {
     setMobileMoreAnchorEl(event.currentTarget)
   }
+
+  const handleAddNewTask = () => setNewTask(true)
+  const handleCloseModal = () => setNewTask(false)
 
   const menuId = 'primary-search-account-menu'
   const renderMenu = (
@@ -168,6 +137,7 @@ export default function AppToolbar() {
 
   return (
     <div className={classes.toolbarRoot}>
+      {addingNewTask && <AddNewTaskModal onClose={handleCloseModal} open />}
       <AppBar position="static">
         <Toolbar>
           <Typography className={classes.title} variant="h3" noWrap>
@@ -176,6 +146,16 @@ export default function AppToolbar() {
           <div className={classes.grow} />
 
           <div className={classes.sectionDesktop}>
+            <IconButton
+              edge="end"
+              aria-label="add new task"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleAddNewTask}
+              color="inherit"
+            >
+              <Add />
+            </IconButton>
             <IconButton
               edge="end"
               aria-label="account of current user"
