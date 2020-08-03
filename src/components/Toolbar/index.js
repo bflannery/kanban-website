@@ -9,7 +9,10 @@ import Menu from '@material-ui/core/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Add from '@material-ui/icons/Add'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import { useDispatch, useSelector } from 'react-redux'
+import { v4 as uuid } from 'uuid'
 import AddNewTaskModal from './AddNewTaskModal'
+import { addNewTask, newTaskSelector } from '../../redux/slices/tasksSlice'
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -38,12 +41,18 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const DEFAULT_NEW_TASK = {
+  task_uuid: uuid(),
+  name: '',
+  description: ''
+}
+
 export default function AppToolbar() {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = useState(null)
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
-  const [addingNewTask, setNewTask] = useState(false)
-
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null)
+  const newTask = useSelector(newTaskSelector)
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
@@ -68,8 +77,9 @@ export default function AppToolbar() {
     setMobileMoreAnchorEl(event.currentTarget)
   }
 
-  const handleAddNewTask = () => setNewTask(true)
-  const handleCloseModal = () => setNewTask(false)
+  const handleAddNewTask = () => {
+    dispatch(addNewTask(DEFAULT_NEW_TASK))
+  }
 
   const menuId = 'primary-search-account-menu'
   const renderMenu = (
@@ -137,7 +147,7 @@ export default function AppToolbar() {
 
   return (
     <div className={classes.toolbarRoot}>
-      {addingNewTask && <AddNewTaskModal onClose={handleCloseModal} open />}
+      {newTask && <AddNewTaskModal open />}
       <AppBar position="static">
         <Toolbar>
           <Typography className={classes.title} variant="h3" noWrap>

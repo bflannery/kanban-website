@@ -6,39 +6,57 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { useDispatch } from 'react-redux'
-import { addTask } from '../../redux/slices/tasksSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  addNewTask,
+  newTaskSelector,
+  submitNewTask,
+  updateNewTask
+} from '../../redux/slices/tasksSlice'
 
 export default function FormDialog({ onClose, open }) {
-  const initialState = {
-    name: '',
-    id: uuid()
-  }
-  const [newTask, updateNewTask] = useState(initialState)
+  const newTask = useSelector(newTaskSelector)
 
   const dispatch = useDispatch()
 
-  const handleOnSubmit = () => dispatch(addTask(newTask))
+  const handleOnChange = e => {
+    const { name, value } = e.target
+    dispatch(updateNewTask({ ...newTask, [name]: value }))
+  }
+
+  const handleOnSubmit = () => {
+    dispatch(submitNewTask(newTask))
+    dispatch(addNewTask(null))
+  }
 
   return (
     <div>
-      <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        open={open}
+        onClose={onClose}
+        aria-labelledby="form-dialog-title"
+        fullWidth
+      >
         <DialogTitle id="form-dialog-title">Add New Task</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <TextField
-            onChange={updateNewTask}
+            onChange={handleOnChange}
             autoFocus
             margin="dense"
             id={`new-task-${newTask.uuid}-name`}
             label="Name"
+            name="name"
             type="text"
             fullWidth
           />
           <TextField
-            onChange={updateNewTask}
+            multiline
+            rows={10}
+            onChange={handleOnChange}
             margin="dense"
             id={`new-task-${newTask.uuid}-description`}
             label="Description"
+            name="description"
             type="text"
             fullWidth
           />
