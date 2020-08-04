@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { v4 as uuid } from 'uuid'
+import React from 'react'
+import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
@@ -8,13 +8,13 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  addNewTask,
+  setNewTask,
   newTaskSelector,
   submitNewTask,
   updateNewTask
 } from '../../redux/slices/tasksSlice'
 
-export default function FormDialog({ onClose, open }) {
+export default function FormDialog({ open }) {
   const newTask = useSelector(newTaskSelector)
 
   const dispatch = useDispatch()
@@ -24,16 +24,20 @@ export default function FormDialog({ onClose, open }) {
     dispatch(updateNewTask({ ...newTask, [name]: value }))
   }
 
+  const handleOnClose = () => {
+    dispatch(setNewTask(null))
+  }
+
   const handleOnSubmit = () => {
     dispatch(submitNewTask(newTask))
-    dispatch(addNewTask(null))
+    dispatch(setNewTask(null))
   }
 
   return (
     <div>
       <Dialog
         open={open}
-        onClose={onClose}
+        onClose={handleOnClose}
         aria-labelledby="form-dialog-title"
         fullWidth
       >
@@ -62,7 +66,7 @@ export default function FormDialog({ onClose, open }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="primary">
+          <Button onClick={handleOnClose} color="primary">
             Cancel
           </Button>
           <Button onClick={handleOnSubmit} color="primary">
@@ -72,4 +76,8 @@ export default function FormDialog({ onClose, open }) {
       </Dialog>
     </div>
   )
+}
+
+FormDialog.propTypes = {
+  open: PropTypes.bool.isRequired
 }

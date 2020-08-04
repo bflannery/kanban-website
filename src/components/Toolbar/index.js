@@ -12,7 +12,7 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import { useDispatch, useSelector } from 'react-redux'
 import { v4 as uuid } from 'uuid'
 import AddNewTaskModal from './AddNewTaskModal'
-import { addNewTask, newTaskSelector } from '../../redux/slices/tasksSlice'
+import { setNewTask, newTaskSelector } from '../../redux/slices/tasksSlice'
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -78,7 +78,7 @@ export default function AppToolbar() {
   }
 
   const handleAddNewTask = () => {
-    dispatch(addNewTask(DEFAULT_NEW_TASK))
+    dispatch(setNewTask(DEFAULT_NEW_TASK))
   }
 
   const menuId = 'primary-search-account-menu'

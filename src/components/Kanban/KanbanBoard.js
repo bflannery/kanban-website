@@ -7,7 +7,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import KanbanColumn from './KanbanColum'
 import { tasksSelector, updateTasks } from '../../redux/slices/tasksSlice'
 
-const COLUMNS = ['backlog', 'wip', 'review', 'done']
+const COLUMNS = [
+  { key: 'backlog', label: 'Backlog', headerColor: 'grey' },
+  { key: 'wip', label: 'Wip', headerColor: 'blue' },
+  { key: 'review', label: 'Review', headerColor: 'orange' },
+  { key: 'done', label: 'Done', headerColor: 'green' }
+]
 
 const useStyles = makeStyles(() => ({
   board: {
@@ -25,9 +30,6 @@ export default function KanbanBoard() {
 
   const tasks = useSelector(tasksSelector)
 
-  const updateNewOrderTasks = updatedTasks =>
-    dispatch(updateTasks(updatedTasks))
-
   const changeTaskStatus = useCallback(
     (id, status) => {
       let task = tasks.find(t => t.id === id)
@@ -37,27 +39,23 @@ export default function KanbanBoard() {
         [taskIndex]: { $set: task }
       })
 
-      updateNewOrderTasks(updatedTasks)
+      dispatch(updateTasks(updatedTasks))
     },
-    [tasks]
+    [tasks, dispatch]
   )
 
   return (
     <main>
       <DndProvider backend={HTML5Backend}>
         <section className={classes.board}>
-          {COLUMNS.map(column => {
-            const columnTasks = tasks.filter(t => t.status === column)
-            return (
-              <KanbanColumn
-                changeTaskStatus={changeTaskStatus}
-                column={column}
-                key={column}
-                status={column}
-                tasks={columnTasks}
-              />
-            )
-          })}
+          {COLUMNS.map(column => (
+            <KanbanColumn
+              changeTaskStatus={changeTaskStatus}
+              column={column}
+              key={column.key}
+              tasks={tasks.filter(t => t.status === column.key)}
+            />
+          ))}
         </section>
       </DndProvider>
     </main>

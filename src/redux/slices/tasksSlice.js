@@ -26,49 +26,45 @@ export const tasksSlice = createSlice({
     }
   },
   reducers: {
-    addNewTask: (state, action) => {
-      state.newTask = action.payload
+    postTasksRequest: state => {
+      state.apiStatus.isLoading = true
+      state.apiStatus.hasLoaded = false
+    },
+    postTasksSuccess: state => {
+      state.apiStatus.isLoading = false
+      state.apiStatus.hasLoaded = true
+    },
+    postTasksError: (state, action) => {
+      state.apiStatus.isLoading = false
+      state.apiStatus.hasLoaded = false
+      state.apiStatus.error = action.payload
     },
     removeTask: (state, action) => {
       state.tasks.filter(todo => todo.id === action.payload)
+    },
+    setNewTask: (state, action) => {
+      state.newTask = action.payload
     },
     updateNewTask: (state, action) => {
       state.newTask = action.payload
     },
     updateTasks: (state, action) => {
-      console.log({ stateTasks: state.tasks, action })
       state.tasks = action.payload
-    },
-    postTasksRequest: state => {
-      state.apiStatus.isLoading = true
-      state.apiStatus.hasLoaded = false
-    },
-    postTasksSuccess: (state, action) => {
-      state.apiStatus.isLoading = false
-      state.apiStatus.hasLoaded = true
-    },
-    postTasksError: (state, action) => {
-      console.log({ action })
-      state.apiStatus.isLoading = false
-      state.apiStatus.hasLoaded = false
-      state.apiStatus.error = action.payload
     }
   }
 })
 
 // Reducer actions
 export const {
-  addNewTask,
+  setNewTask,
   postTasksError,
   postTasksRequest,
   postTasksSuccess,
-  removeTask,
   updateNewTask,
   updateTasks
 } = tasksSlice.actions
 
 export const submitNewTask = newTask => async dispatch => {
-  console.log({ newTask })
   dispatch(postTasksRequest())
   try {
     const response = await axios({
@@ -79,7 +75,6 @@ export const submitNewTask = newTask => async dispatch => {
     console.log({ response })
     dispatch(postTasksSuccess())
   } catch (err) {
-    console.log({ err })
     dispatch(postTasksError(err.message))
   }
 }

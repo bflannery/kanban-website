@@ -1,15 +1,9 @@
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import { useDrop } from 'react-dnd'
 import makeStyles from '@material-ui/styles/makeStyles'
 import KanbanItem from './KanbanItem'
-
-const LABELS = {
-  backlog: 'Backlog',
-  wip: 'In Progress',
-  review: 'Review',
-  done: 'Done'
-}
 
 const useStyles = makeStyles(theme => ({
   column: {
@@ -28,20 +22,15 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function KanbanColumn({
-  column,
-  status,
-  changeTaskStatus,
-  tasks
-}) {
-  const classes = useStyles()
+export default function KanbanColumn({ column, changeTaskStatus, tasks }) {
+  const classes = useStyles(column)
 
   const ref = useRef(null)
 
   const [, drop] = useDrop({
     accept: 'card',
     drop(item) {
-      changeTaskStatus(item.id, status)
+      changeTaskStatus(item.id, column.key)
     }
   })
 
@@ -49,7 +38,9 @@ export default function KanbanColumn({
 
   return (
     <div ref={ref} className={classes.column}>
-      <div className={classes.columnHead}>{LABELS[column]}</div>
+      <div className={classNames(classes.columnHead, classes.columnHeadColor)}>
+        {column.label}
+      </div>
       <div>
         {tasks.map(item => (
           <KanbanItem key={item.id} item={item} />
@@ -60,8 +51,7 @@ export default function KanbanColumn({
 }
 
 KanbanColumn.propTypes = {
-  status: PropTypes.string.isRequired,
   changeTaskStatus: PropTypes.func.isRequired,
-  column: PropTypes.string.isRequired,
+  column: PropTypes.object.isRequired,
   tasks: PropTypes.array.isRequired
 }
