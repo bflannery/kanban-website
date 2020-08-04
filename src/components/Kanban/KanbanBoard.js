@@ -8,10 +8,10 @@ import KanbanColumn from './KanbanColum'
 import { tasksSelector, updateTasks } from '../../redux/slices/tasksSlice'
 
 const COLUMNS = [
-  { key: 'backlog', label: 'Backlog', headerColor: 'grey' },
-  { key: 'wip', label: 'Wip', headerColor: 'blue' },
-  { key: 'review', label: 'Review', headerColor: 'orange' },
-  { key: 'done', label: 'Done', headerColor: 'green' }
+  { key: 'backlog', label: 'Backlog' },
+  { key: 'wip', label: 'In Progress' },
+  { key: 'review', label: 'Review' },
+  { key: 'done', label: 'Done' }
 ]
 
 const useStyles = makeStyles(() => ({
